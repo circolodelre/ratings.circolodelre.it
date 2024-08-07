@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "name": "Magnus Carlsen",
+      "club": "Offerspill Chess Club",
+      "elo": 2862,
+      "trend": "+5",
+      "wins": 10,
+      "draws": 2,
+      "losses": 1,
+      "matches": [
+        {"date": "2024-01-05", "white": "Magnus Carlsen", "black": "Fabiano Caruana", "result": "1 - 0"},
+        {"date": "2024-01-15", "white": "Ding Liren", "black": "Magnus Carlsen", "result": "1/2 - 1/2"}
+      ]
+    },
+    {
+      "name": "Fabiano Caruana",
+      "club": "Saint Louis Chess Club",
+      "elo": 2820,
+      "trend": "+3",
+      "wins": 8,
+      "draws": 5,
+      "losses": 2,
+      "matches": [
+        {"date": "2024-01-05", "white": "Magnus Carlsen", "black": "Fabiano Caruana", "result": "1 - 0"},
+        {"date": "2024-01-18", "white": "Fabiano Caruana", "black": "Wesley So", "result": "1 - 0"}
+      ]
+    }
+  ]
+}

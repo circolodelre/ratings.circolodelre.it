@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Club Elo Rankings</title>
+    <!-- Foundation CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css">
+    <!-- DataTables Foundation CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.foundation.css">
+    <style>
+        .details-control {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        .dataTables_wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        .dataTables_filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dataTables_filter label {
+            margin-right: 10px;
+        }
+        .dataTables_filter select {
+            margin-left: 10px;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details-table th, .details-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .details-table th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-container">
+    <div class="grid-x grid-margin-x">
+        <div class="cell">
+            <h1>Chess Club Elo Rankings</h1>
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Club</th>
+                    <th>Elo</th>
+                    <th>Trend</th>
+                    <th>Wins</th>
+                    <th>Draws</th>
+                    <th>Losses</th>
+                    <th>Details</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Club</th>
+                    <th>Elo</th>
+                    <th>Trend</th>
+                    <th>Wins</th>
+                    <th>Draws</th>
+                    <th>Losses</th>
+                    <th>Details</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<!-- Foundation JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.min.js"></script>
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.1.3/js/dataTables.foundation.js"></script>
+<!-- DataTables Initialization -->
+<script>
+    $(document).ready(function() {
+        function format(d) {
+            // Crea una tabella con i dettagli delle partite
+            let matchesTable = '<table class="details-table"><thead><tr><th>Date</th><th>White</th><th>Black</th><th>Result</th></tr></thead><tbody>';
+            d.matches.forEach(function(match) {
+                matchesTable += '<tr><td>' + match.date + '</td><td>' + match.white + '</td><td>' + match.black + '</td><td>' + match.result + '</td></tr>';
+            });
+            matchesTable += '</tbody></table>';
+            return matchesTable;
+        }
+
+        // Inizializza DataTable con il selettore dell'anno
+        var table = $('#example').DataTable({
+            ajax: '2024.json', // Default year
+            columns: [
+                { data: 'name', title: 'Name' },
+                { data: 'club', title: 'Club' },
+                { data: 'elo', title: 'Elo' },
+                { data: 'trend', title: 'Trend' },
+                { data: 'wins', title: 'Wins' },
+                { data: 'draws', title: 'Draws' },
+                { data: 'losses', title: 'Losses' },
+                {
+                    data: null,
+                    className: 'details-control',
+                    orderable: false,
+                    defaultContent: 'Show Matches'
+                }
+            ],
+            order: [[2, 'desc']],
+        });
+
+        // Aggiungi il selettore dell'anno al wrapper personalizzato
+        $("div.year-selector").html(`
+                <label for="yearSelector">Select Year:</label>
+                <select id="yearSelector">
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <!-- Aggiungi altri anni come necessario -->
+                </select>
+            `);
+
+        // Aggiungi un listener per l'espansione delle righe
+        $('#example tbody').on('click', 'td.details-control', function() {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // Questa riga è già aperta - chiudila
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Apri questa riga
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
+
+        // Cambia i dati quando viene selezionato un nuovo anno
+        $('#yearSelector').change(function() {
+            var selectedYear = $(this).val();
+            table.ajax.url('chess_data_' + selectedYear + '.json').load();
+        });
+    });
+</script>
+</body>
+</html>
